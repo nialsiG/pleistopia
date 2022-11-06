@@ -8,22 +8,27 @@ love.graphics.setDefaultFilter("nearest")
  function love.load()
    
    level01 = require("level01")
+   enemies = require("enemies")
    player = require("player")
-   shooter = require("shooter")
-
+   screen = require("screen")
+   playerProj = require("player_projectiles")
+   ui = require("ui")
 
 
    love.window.setMode(
-        level01.map.TILE_WIDTH * level01.map.MAP_WIDTH, 
-        level01.map.TILE_HEIGHT * level01.map.MAP_HEIGHT, 
-        {resizable = true, vsync = 0, minwidth = 400, minheight = 300})
-   screenWidth = love.graphics.getWidth()
-   screenHeight = love.graphics.getHeight()
+        --level01.map.TILE_WIDTH * 30, 
+        --level01.map.TILE_HEIGHT * 24,
+        screen.tileWidth * screen.mapWidth,
+        screen.tileHeight * screen.mapHeight + ui.background:getHeight())
+   
+   --screenWidth = love.graphics.getWidth()
+   --screenHeight = love.graphics.getHeight()
 
 
 
    level01.Load()
-   player.Load(screenWidth / 8, screenHeight / 2)
+   player.Load(screen.width / 8, screen.height / 2)
+   ui.Load()
 
 
  end
@@ -34,7 +39,9 @@ love.graphics.setDefaultFilter("nearest")
  function love.update(dt)
    level01.Update(dt)
    player.Update(dt)
-
+   playerProj.Update(dt)
+   --enemies.Update(dt)
+   ui.Update(dt)
  end
 
  ---------------------------------------------------
@@ -43,7 +50,19 @@ love.graphics.setDefaultFilter("nearest")
  function love.draw()
     --love.graphics.draw(img, x, y, rotation, scaleX, scaleY, ox, oy)
    level01.Draw()
-   player.Draw()
+   ui.Draw()
+
+   if player.isVisible == true then
+      player.Draw()
+   end
+
+   enemies.Draw()
+   playerProj.Draw()
+   
+
+
+
+
  end
 
 ---------------------------------------------------
@@ -57,5 +76,5 @@ love.graphics.setDefaultFilter("nearest")
 
  function love.mousepressed(x, y, button, istouch, presses)
     print(button)
-    shooter.Keypressed(button)
+    player.Keypressed(button)
 end
